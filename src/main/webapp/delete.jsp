@@ -24,7 +24,7 @@ background:linear-gradient(135deg,#ff416c,#ff4b2b);
 }
 
 .container{
-width:420px;
+width:430px;
 background:white;
 padding:35px;
 border-radius:22px;
@@ -33,7 +33,7 @@ text-align:center;
 }
 
 h2{
-color:#ff4b2b;
+color:#ff416c;
 margin-bottom:25px;
 font-size:30px;
 }
@@ -41,31 +41,30 @@ font-size:30px;
 label{
 display:block;
 text-align:left;
-font-weight:bold;
 margin-bottom:8px;
-color:#333;
-font-size:16px;
+font-weight:bold;
+color:#444;
 }
 
 .input-box{
 width:100%;
-padding:13px;
+padding:12px;
 border:2px solid #ddd;
-border-radius:12px;
+border-radius:10px;
 font-size:16px;
-outline:none;
 transition:0.3s;
 }
 
 .input-box:focus{
-border-color:#ff4b2b;
-box-shadow:0 0 8px rgba(255,75,43,0.35);
+border-color:#ff416c;
+outline:none;
+box-shadow:0 0 8px rgba(255,65,108,0.3);
 }
 
 .btn{
 width:100%;
-margin-top:22px;
 padding:14px;
+margin-top:22px;
 border:none;
 border-radius:12px;
 background:linear-gradient(to right,#ff416c,#ff4b2b);
@@ -81,23 +80,22 @@ transform:scale(1.03);
 box-shadow:0 8px 18px rgba(0,0,0,0.2);
 }
 
-.note{
-margin-top:14px;
-font-size:13px;
-color:gray;
-}
-
 a{
 display:block;
 margin-top:18px;
 text-decoration:none;
 font-weight:bold;
-color:#ff4b2b;
-font-size:16px;
+color:#ff416c;
 }
 
 a:hover{
-color:#c92a1b;
+color:#ff4b2b;
+}
+
+.note{
+margin-top:12px;
+font-size:13px;
+color:gray;
 }
 
 </style>
@@ -110,7 +108,7 @@ let id=document.forms["f"]["id"].value;
 
 if(id=="")
 {
-alert("Please enter Student ID");
+alert("Student ID is required");
 return false;
 }
 
@@ -146,7 +144,7 @@ placeholder="Enter Student ID">
 </form>
 
 <div class="note">
-Enter valid ID to remove record
+Enter valid Student ID to delete record
 </div>
 
 <a href="index.jsp">Back to Home</a>

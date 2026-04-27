@@ -1,62 +1,95 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
-
 <html>
 <head>
 <title>Add Student Marks</title>
 
 <style>
 
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
 body{
-font-family:Arial;
-background:linear-gradient(to right,#36d1dc,#5b86e5);
+font-family:Arial, sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:linear-gradient(135deg,#43cea2,#185a9d);
 }
 
 .container{
-width:450px;
-margin:auto;
-margin-top:60px;
+width:460px;
 background:white;
-padding:30px;
-border-radius:15px;
-box-shadow:0px 0px 10px gray;
+padding:35px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,0.25);
 }
 
 h2{
 text-align:center;
-color:#333;
+color:#185a9d;
+margin-bottom:25px;
+font-size:30px;
 }
 
-input[type=text],
-input[type=date]{
-width:100%;
-padding:10px;
-margin:8px 0;
-border:1px solid #ccc;
-border-radius:8px;
+label{
+display:block;
+margin-top:14px;
+margin-bottom:6px;
+font-weight:bold;
+color:#444;
 }
 
-input[type=submit]{
+.input-box{
 width:100%;
 padding:12px;
-background:#28a745;
-color:white;
-border:none;
-border-radius:8px;
-font-size:18px;
-cursor:pointer;
+border:2px solid #ddd;
+border-radius:10px;
+font-size:15px;
+transition:0.3s;
 }
 
-input[type=submit]:hover{
-background:#218838;
+.input-box:focus{
+border-color:#185a9d;
+outline:none;
+box-shadow:0 0 8px rgba(24,90,157,0.3);
+}
+
+.btn{
+width:100%;
+padding:14px;
+margin-top:25px;
+border:none;
+border-radius:12px;
+background:linear-gradient(to right,#43cea2,#185a9d);
+color:white;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.btn:hover{
+transform:scale(1.03);
+box-shadow:0 8px 18px rgba(0,0,0,0.2);
+}
+
+.note{
+text-align:center;
+font-size:13px;
+color:gray;
+margin-top:12px;
 }
 
 a{
 display:block;
 text-align:center;
-margin-top:15px;
+margin-top:18px;
 text-decoration:none;
-color:#007bff;
+font-weight:bold;
+color:#185a9d;
 }
 
 </style>
@@ -65,25 +98,24 @@ color:#007bff;
 
 function validateForm()
 {
-let id = document.forms["f"]["id"].value.trim();
-let name = document.forms["f"]["name"].value.trim();
-let subject = document.forms["f"]["subject"].value.trim();
-let marks = document.forms["f"]["marks"].value.trim();
-let date = document.forms["f"]["date"].value.trim();
+let name=document.forms["f"]["name"].value;
+let subject=document.forms["f"]["subject"].value;
+let marks=document.forms["f"]["marks"].value;
+let date=document.forms["f"]["date"].value;
 
-if(id === "" || name === "" || subject === "" || marks === "" || date === "")
+if(name=="" || subject=="" || marks=="" || date=="")
 {
 alert("All fields are required");
 return false;
 }
 
-if(isNaN(id))
+if(isNaN(marks))
 {
-alert("ID must be numeric");
+alert("Marks must be numeric");
 return false;
 }
 
-if(isNaN(marks) || marks < 0 || marks > 100)
+if(marks<0 || marks>100)
 {
 alert("Marks must be between 0 and 100");
 return false;
@@ -105,24 +137,28 @@ return true;
 <form name="f" action="AddMarkServlet" method="post"
 onsubmit="return validateForm()">
 
-Student ID:
-<input type="text" name="id" required>
+<label>Student Name</label>
+<input type="text" name="name" class="input-box"
+placeholder="Enter student name">
 
-Student Name:
-<input type="text" name="name" required>
+<label>Subject</label>
+<input type="text" name="subject" class="input-box"
+placeholder="Enter subject name">
 
-Subject:
-<input type="text" name="subject" required>
+<label>Marks</label>
+<input type="text" name="marks" class="input-box"
+placeholder="Enter marks">
 
-Marks:
-<input type="text" name="marks" required>
+<label>Exam Date</label>
+<input type="date" name="date" class="input-box">
 
-Exam Date:
-<input type="date" name="date" required>
-
-<input type="submit" value="Add Record">
+<input type="submit" value="Add Record" class="btn">
 
 </form>
+
+<div class="note">
+Student ID Auto Generated
+</div>
 
 <a href="index.jsp">Back to Home</a>
 

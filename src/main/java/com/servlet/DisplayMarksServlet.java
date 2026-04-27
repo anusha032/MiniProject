@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.PreparedStatement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,41 +25,68 @@ public class DisplayMarksServlet extends HttpServlet {
         try {
 
             Connection con = MarkDAO.getConnection();
-            Statement st = con.createStatement();
 
             String idParam = request.getParameter("id");
 
+            PreparedStatement ps;
             ResultSet rs;
 
-            // 🔥 IF USER ENTERS ID → SEARCH THAT RECORD ONLY
-            if (idParam != null && !idParam.trim().isEmpty()) {
+            if(idParam != null && !idParam.trim().equals("")) {
 
                 int id = Integer.parseInt(idParam);
 
-                rs = st.executeQuery(
-                    "SELECT * FROM StudentMarks WHERE StudentID = " + id
-                );
+                ps = con.prepareStatement(
+                "select * from StudentMarks where StudentID=?");
+
+                ps.setInt(1, id);
 
             } else {
 
-                // 🔥 ELSE SHOW ALL RECORDS
-                rs = st.executeQuery("SELECT * FROM StudentMarks");
+                ps = con.prepareStatement(
+                "select * from StudentMarks");
+
             }
 
-            out.println("<html><body style='font-family:Arial;'>");
+            rs = ps.executeQuery();
 
-            out.println("<h2 style='text-align:center;'>Student Marks</h2>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Display Marks</title>");
 
-            out.println("<table border='1' style='width:80%;margin:auto;text-align:center;border-collapse:collapse;'>");
+            out.println("<style>");
+            out.println("body{margin:0;font-family:Arial;background:linear-gradient(135deg,#11998e,#38ef7d);padding:40px;}");
+            out.println(".box{background:white;width:90%;margin:auto;padding:30px;border-radius:20px;box-shadow:0 15px 35px rgba(0,0,0,0.25);}");
+            out.println("h2{text-align:center;color:#11998e;margin-bottom:25px;}");
+            out.println("table{width:100%;border-collapse:collapse;text-align:center;}");
+            out.println("th{background:#11998e;color:white;padding:12px;}");
+            out.println("td{padding:12px;border-bottom:1px solid #ddd;}");
+            out.println("tr:hover{background:#f5f5f5;}");
+            out.println("a{display:block;text-align:center;margin-top:20px;text-decoration:none;font-weight:bold;color:#11998e;}");
+            out.println("</style>");
 
-            out.println("<tr style='background:#2ebf91;color:white;'>");
-            out.println("<th>ID</th><th>Name</th><th>Subject</th><th>Marks</th><th>Date</th>");
+            out.println("</head>");
+            out.println("<body>");
+
+            out.println("<div class='box'>");
+
+            out.println("<h2>Student Marks Records</h2>");
+
+            out.println("<table>");
+
+            out.println("<tr>");
+            out.println("<th>ID</th>");
+            out.println("<th>Name</th>");
+            out.println("<th>Subject</th>");
+            out.println("<th>Marks</th>");
+            out.println("<th>Exam Date</th>");
             out.println("</tr>");
 
             boolean found = false;
 
             while(rs.next()) {
+
                 found = true;
+
                 out.println("<tr>");
                 out.println("<td>" + rs.getInt(1) + "</td>");
                 out.println("<td>" + rs.getString(2) + "</td>");
@@ -70,20 +97,25 @@ public class DisplayMarksServlet extends HttpServlet {
             }
 
             if(!found) {
-                out.println("<tr><td colspan='5' style='color:red;'>No Record Found</td></tr>");
+
+                out.println("<tr>");
+                out.println("<td colspan='5' style='color:red;'>No Record Found</td>");
+                out.println("</tr>");
             }
 
             out.println("</table>");
 
-            out.println("<div style='text-align:center;margin-top:20px;'>");
-            out.println("<a href='display.jsp'>Back</a>");
-            out.println("</div>");
+            out.println("<a href='markdisplay.jsp'>Back</a>");
+            out.println("<a href='index.jsp'>Home</a>");
 
-            out.println("</body></html>");
+            out.println("</div>");
+            out.println("</body>");
+            out.println("</html>");
 
             con.close();
 
         } catch(Exception e) {
+
             out.println("<h3 style='color:red;text-align:center;'>" + e + "</h3>");
         }
     }

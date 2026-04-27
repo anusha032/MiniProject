@@ -23,14 +23,21 @@ public class UpdateMarkServlet extends HttpServlet {
 
         try {
 
-            int id = Integer.parseInt(request.getParameter("id"));
-            int marks = Integer.parseInt(request.getParameter("marks"));
+            String idStr = request.getParameter("id");
+            String marksStr = request.getParameter("marks");
+
+            if(idStr.equals("") || marksStr.equals("")) {
+                out.println("<h2>All fields are required</h2>");
+                return;
+            }
+
+            int id = Integer.parseInt(idStr);
+            int marks = Integer.parseInt(marksStr);
 
             Connection con = MarkDAO.getConnection();
 
             PreparedStatement ps = con.prepareStatement(
-                "UPDATE StudentMarks SET Marks=? WHERE StudentID=?"
-            );
+            "update StudentMarks set Marks=? where StudentID=?");
 
             ps.setInt(1, marks);
             ps.setInt(2, id);
@@ -40,23 +47,35 @@ public class UpdateMarkServlet extends HttpServlet {
             out.println("<html>");
             out.println("<head>");
             out.println("<title>Update Result</title>");
+
+            out.println("<style>");
+            out.println("body{margin:0;font-family:Arial;background:linear-gradient(135deg,#8E2DE2,#4A00E0);height:100vh;display:flex;justify-content:center;align-items:center;}");
+            out.println(".box{background:white;width:450px;padding:35px;border-radius:22px;box-shadow:0 15px 35px rgba(0,0,0,0.25);text-align:center;}");
+            out.println("h2{margin-bottom:15px;}");
+            out.println("p{color:#555;font-size:16px;}");
+            out.println("a{display:block;text-decoration:none;margin-top:15px;font-weight:bold;color:#4A00E0;}");
+            out.println("a:hover{color:#8E2DE2;}");
+            out.println("</style>");
+
             out.println("</head>");
+            out.println("<body>");
 
-            out.println("<body style='font-family:Arial;background:linear-gradient(to right,#8360c3,#2ebf91);'>");
+            out.println("<div class='box'>");
 
-            out.println("<div style='width:400px;margin:auto;margin-top:80px;padding:25px;background:white;border-radius:15px;box-shadow:0px 0px 15px rgba(0,0,0,0.3);text-align:center;'>");
+            if(result > 0) {
 
-            if (result > 0) {
-                out.println("<h2 style='color:#28a745;'>✔ Record Updated Successfully</h2>");
-                out.println("<p style='color:#555;'>Student marks have been updated in the database.</p>");
+                out.println("<h2 style='color:green;'>Record Updated Successfully</h2>");
+                out.println("<p>Student marks updated in database.</p>");
+
             } else {
-                out.println("<h2 style='color:#dc3545;'>✖ Record Not Found</h2>");
-                out.println("<p style='color:#555;'>Please check Student ID.</p>");
+
+                out.println("<h2 style='color:red;'>Record Not Found</h2>");
+                out.println("<p>Please check Student ID.</p>");
             }
 
-            out.println("<br><a href='update.jsp' style='background:#007bff;color:white;padding:10px 15px;text-decoration:none;border-radius:8px;'>Try Again</a>");
-            out.println("<br><br><a href='view.jsp' style='color:#2ebf91;text-decoration:none;'>View Records</a>");
-            out.println("<br><br><a href='index.jsp' style='color:#8360c3;text-decoration:none;'>Home</a>");
+            out.println("<a href='markupdate.jsp'>Update Again</a>");
+            out.println("<a href='markdisplay.jsp'>View Records</a>");
+            out.println("<a href='index.jsp'>Back to Home</a>");
 
             out.println("</div>");
             out.println("</body>");
@@ -64,9 +83,9 @@ public class UpdateMarkServlet extends HttpServlet {
 
             con.close();
 
-        } catch (Exception e) {
+        } catch(Exception e) {
 
-            out.println("<div style='color:red;text-align:center;font-size:18px;'>Error: " + e + "</div>");
+            out.println("<h3 style='color:red;text-align:center;'>Error : " + e + "</h3>");
         }
     }
 }

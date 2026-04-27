@@ -4,7 +4,7 @@ pageEncoding="UTF-8"%>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Delete Student Record</title>
+<title>Update Student Marks</title>
 
 <style>
 
@@ -20,11 +20,11 @@ height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#ff416c,#ff4b2b);
+background:linear-gradient(135deg,#ff9966,#ff5e62);
 }
 
 .container{
-width:420px;
+width:430px;
 background:white;
 padding:35px;
 border-radius:22px;
@@ -33,7 +33,7 @@ text-align:center;
 }
 
 h2{
-color:#ff4b2b;
+color:#ff5e62;
 margin-bottom:25px;
 font-size:30px;
 }
@@ -42,6 +42,7 @@ label{
 display:block;
 text-align:left;
 font-weight:bold;
+margin-top:12px;
 margin-bottom:8px;
 color:#333;
 font-size:16px;
@@ -58,8 +59,8 @@ transition:0.3s;
 }
 
 .input-box:focus{
-border-color:#ff4b2b;
-box-shadow:0 0 8px rgba(255,75,43,0.35);
+border-color:#ff5e62;
+box-shadow:0 0 8px rgba(255,94,98,0.35);
 }
 
 .btn{
@@ -68,7 +69,7 @@ margin-top:22px;
 padding:14px;
 border:none;
 border-radius:12px;
-background:linear-gradient(to right,#ff416c,#ff4b2b);
+background:linear-gradient(to right,#ff9966,#ff5e62);
 color:white;
 font-size:18px;
 font-weight:bold;
@@ -92,12 +93,12 @@ display:block;
 margin-top:18px;
 text-decoration:none;
 font-weight:bold;
-color:#ff4b2b;
+color:#ff5e62;
 font-size:16px;
 }
 
 a:hover{
-color:#c92a1b;
+color:#e64a4a;
 }
 
 </style>
@@ -107,16 +108,29 @@ color:#c92a1b;
 function validateForm()
 {
 let id=document.forms["f"]["id"].value;
+let marks=document.forms["f"]["marks"].value;
 
-if(id=="")
+if(id=="" || marks=="")
 {
-alert("Please enter Student ID");
+alert("All fields are required");
 return false;
 }
 
 if(isNaN(id))
 {
 alert("Student ID must be numeric");
+return false;
+}
+
+if(isNaN(marks))
+{
+alert("Marks must be numeric");
+return false;
+}
+
+if(marks<0 || marks>100)
+{
+alert("Marks must be between 0 and 100");
 return false;
 }
 
@@ -131,22 +145,25 @@ return true;
 
 <div class="container">
 
-<h2>Delete Student Record</h2>
+<h2>Update Student Marks</h2>
 
-<form name="f" action="DeleteMarkServlet" method="post"
+<form name="f" action="UpdateMarkServlet" method="post"
 onsubmit="return validateForm()">
 
 <label>Student ID</label>
-
 <input type="text" name="id" class="input-box"
 placeholder="Enter Student ID">
 
-<input type="submit" value="Delete Record" class="btn">
+<label>New Marks</label>
+<input type="text" name="marks" class="input-box"
+placeholder="Enter New Marks">
+
+<input type="submit" value="Update Record" class="btn">
 
 </form>
 
 <div class="note">
-Enter valid ID to remove record
+Enter valid Student ID and marks
 </div>
 
 <a href="index.jsp">Back to Home</a>

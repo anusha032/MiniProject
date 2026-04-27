@@ -8,83 +8,147 @@ pageEncoding="UTF-8"%>
 
 <style>
 
-body{
+*{
 margin:0;
-font-family:Arial;
-background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:Arial, sans-serif;
+height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 }
 
 .container{
-width:420px;
+width:450px;
 background:white;
-padding:30px;
-border-radius:18px;
-box-shadow:0 10px 25px rgba(0,0,0,0.4);
+padding:35px;
+border-radius:22px;
+box-shadow:0 15px 35px rgba(0,0,0,0.30);
 text-align:center;
 }
 
 h2{
 color:#2c5364;
-margin-bottom:20px;
+margin-bottom:25px;
+font-size:30px;
 }
 
 label{
 display:block;
 text-align:left;
-margin-top:10px;
 font-weight:bold;
+margin-top:12px;
+margin-bottom:8px;
 color:#333;
+font-size:16px;
 }
 
-select, input[type=text]{
+.input-box,
+select{
 width:100%;
-padding:12px;
-margin-top:5px;
-border:1px solid #ccc;
-border-radius:10px;
+padding:13px;
+border:2px solid #ddd;
+border-radius:12px;
+font-size:16px;
 outline:none;
 transition:0.3s;
 }
 
-select:focus, input[type=text]:focus{
+.input-box:focus,
+select:focus{
 border-color:#36d1dc;
-box-shadow:0 0 5px rgba(54,209,220,0.4);
+box-shadow:0 0 8px rgba(54,209,220,0.35);
 }
 
-input[type=submit]{
+.btn{
 width:100%;
-margin-top:20px;
-padding:12px;
+margin-top:22px;
+padding:14px;
 border:none;
-border-radius:10px;
+border-radius:12px;
 background:linear-gradient(to right,#36d1dc,#5b86e5);
 color:white;
-font-size:16px;
+font-size:18px;
+font-weight:bold;
 cursor:pointer;
 transition:0.3s;
 }
 
-input[type=submit]:hover{
+.btn:hover{
 transform:scale(1.03);
+box-shadow:0 8px 18px rgba(0,0,0,0.2);
 }
 
-a{
+.link-btn{
 display:block;
-margin-top:15px;
+margin-top:16px;
+padding:14px;
+border-radius:12px;
 text-decoration:none;
-color:#36d1dc;
 font-weight:bold;
+font-size:16px;
+color:white;
+background:linear-gradient(to right,#8e44ad,#36d1dc);
+transition:0.3s;
 }
 
-a:hover{
-color:#5b86e5;
+.link-btn:hover{
+transform:scale(1.03);
+box-shadow:0 8px 18px rgba(0,0,0,0.2);
+}
+
+.home{
+display:block;
+margin-top:18px;
+text-decoration:none;
+font-weight:bold;
+color:#2c5364;
+font-size:16px;
+}
+
+.home:hover{
+color:#36d1dc;
+}
+
+.note{
+margin-top:12px;
+font-size:13px;
+color:gray;
 }
 
 </style>
+
+<script>
+
+function validateForm()
+{
+let type=document.forms["f"]["type"].value;
+let value=document.forms["f"]["value"].value;
+
+if(value=="")
+{
+alert("Please enter required value");
+return false;
+}
+
+if(type=="above" || type=="top")
+{
+if(isNaN(value))
+{
+alert("Please enter numeric value");
+return false;
+}
+}
+
+return true;
+}
+
+</script>
 
 </head>
 
@@ -94,25 +158,35 @@ color:#5b86e5;
 
 <h2>Student Marks Reports</h2>
 
-<form action="ReportServlet" method="get">
+<form name="f" action="ReportServlet" method="get"
+onsubmit="return validateForm()">
 
 <label>Select Report Type</label>
+
 <select name="type">
-    <option value="above">Marks Above Value</option>
-    <option value="subject">Subject Wise</option>
-    <option value="top">Top N Students</option>
+<option value="above">Marks Above Value</option>
+<option value="subject">Subject Wise</option>
+<option value="top">Top N Students</option>
 </select>
 
 <label>Enter Value / Subject / Top N</label>
-<input type="text" name="value" placeholder="Enter value">
 
-<input type="submit" value="Generate Report">
+<input type="text" name="value" class="input-box"
+placeholder="50 / Java / 5">
+
+<input type="submit" value="Generate Report" class="btn">
 
 </form>
 
-<a href="report_form.jsp">Advanced Report Search</a>
+<a href="report_form.jsp" class="link-btn">
+Advanced Report Search
+</a>
 
-<a href="index.jsp">Back to Home</a>
+<div class="note">
+Example: 50 for Above, Java for Subject, 5 for Top Students
+</div>
+
+<a href="index.jsp" class="home">Back to Home</a>
 
 </div>
 
