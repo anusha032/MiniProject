@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
@@ -12,10 +13,10 @@ pageEncoding="UTF-8"%>
 margin:0;
 padding:0;
 box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
 body{
-font-family:Arial, sans-serif;
 height:100vh;
 display:flex;
 justify-content:center;
@@ -23,8 +24,10 @@ align-items:center;
 background:linear-gradient(135deg,#ff416c,#ff4b2b);
 }
 
+/* MAIN BOX */
+
 .container{
-width:420px;
+width:430px;
 background:white;
 padding:35px;
 border-radius:22px;
@@ -44,7 +47,6 @@ text-align:left;
 font-weight:bold;
 margin-bottom:8px;
 color:#333;
-font-size:16px;
 }
 
 .input-box{
@@ -54,12 +56,10 @@ border:2px solid #ddd;
 border-radius:12px;
 font-size:16px;
 outline:none;
-transition:0.3s;
 }
 
 .input-box:focus{
 border-color:#ff4b2b;
-box-shadow:0 0 8px rgba(255,75,43,0.35);
 }
 
 .btn{
@@ -73,54 +73,109 @@ color:white;
 font-size:18px;
 font-weight:bold;
 cursor:pointer;
-transition:0.3s;
 }
 
-.btn:hover{
-transform:scale(1.03);
-box-shadow:0 8px 18px rgba(0,0,0,0.2);
+/* POPUP */
+
+.popup{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.5);
+display:none;
+justify-content:center;
+align-items:center;
 }
 
-.note{
-margin-top:14px;
-font-size:13px;
-color:gray;
+.popup-box{
+background:white;
+width:350px;
+padding:30px;
+border-radius:20px;
+text-align:center;
+animation:pop 0.3s ease;
+}
+
+@keyframes pop{
+from{
+transform:scale(0.7);
+opacity:0;
+}
+to{
+transform:scale(1);
+opacity:1;
+}
+}
+
+.popup-box h3{
+color:#ff416c;
+margin-bottom:15px;
+font-size:24px;
+}
+
+.popup-box p{
+margin-bottom:25px;
+font-size:16px;
+color:#555;
+}
+
+.popup-btn{
+padding:12px 25px;
+border:none;
+border-radius:10px;
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+margin:8px;
+}
+
+.yes{
+background:#28a745;
+color:white;
+}
+
+.cancel{
+background:#dc3545;
+color:white;
 }
 
 a{
 display:block;
-margin-top:18px;
+margin-top:20px;
 text-decoration:none;
 font-weight:bold;
-color:#ff4b2b;
-font-size:16px;
-}
-
-a:hover{
-color:#c92a1b;
+color:#ff416c;
 }
 
 </style>
 
 <script>
 
-function validateForm()
+function showPopup()
 {
-let id=document.forms["f"]["id"].value;
+    let id = document.getElementById("id").value;
 
-if(id=="")
-{
-alert("Please enter Student ID");
-return false;
+    if(id=="")
+    {
+        alert("Please Enter Student ID");
+        return false;
+    }
+
+    document.getElementById("popup").style.display="flex";
+
+    return false;
 }
 
-if(isNaN(id))
+function deleteRecord()
 {
-alert("Student ID must be numeric");
-return false;
+    document.getElementById("deleteForm").submit();
 }
 
-return true;
+function closePopup()
+{
+    document.getElementById("popup").style.display="none";
 }
 
 </script>
@@ -133,23 +188,50 @@ return true;
 
 <h2>Delete Student Record</h2>
 
-<form name="f" action="DeleteMarkServlet" method="post"
-onsubmit="return validateForm()">
+<form id="deleteForm"
+action="DeleteMarkServlet"
+method="post">
 
 <label>Student ID</label>
 
-<input type="text" name="id" class="input-box"
+<input type="text"
+id="id"
+name="id"
+class="input-box"
 placeholder="Enter Student ID">
 
-<input type="submit" value="Delete Record" class="btn">
+<input type="button"
+value="Delete Record"
+class="btn"
+onclick="showPopup()">
 
 </form>
 
-<div class="note">
-Enter valid ID to remove record
+<a href="index.jsp">← Back to Home</a>
+
 </div>
 
-<a href="index.jsp">Back to Home</a>
+<!-- POPUP -->
+
+<div class="popup" id="popup">
+
+<div class="popup-box">
+
+<h3>Confirm Delete</h3>
+
+<p>Do you want to delete this record?</p>
+
+<button class="popup-btn yes"
+onclick="deleteRecord()">
+YES
+</button>
+
+<button class="popup-btn cancel"
+onclick="closePopup()">
+CANCEL
+</button>
+
+</div>
 
 </div>
 

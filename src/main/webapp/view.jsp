@@ -1,11 +1,14 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+pageEncoding="UTF-8"%>
+
 <%@ page import="java.sql.*" %>
 <%@ page import="com.dao.MarkDAO" %>
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>View Student Marks</title>
+<title>View Student Records</title>
 
 <style>
 
@@ -13,62 +16,113 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
+font-family:Arial,sans-serif;
 }
 
 body{
-font-family:Arial, sans-serif;
-background:linear-gradient(135deg,#141e30,#243b55);
-min-height:100vh;
-padding:40px;
+background:linear-gradient(135deg,#ffe6f0,#fff5f8);
+padding:30px;
 }
 
-.container{
-width:95%;
-max-width:1100px;
-margin:auto;
-background:white;
-padding:35px;
-border-radius:22px;
-box-shadow:0 15px 35px rgba(0,0,0,0.25);
+/* HEADING */
+
+.title{
 text-align:center;
+font-size:42px;
+font-weight:bold;
+color:#d63384;
+margin-bottom:35px;
 }
 
-h2{
-color:#2ebf91;
-margin-bottom:25px;
-font-size:32px;
+/* SUMMARY BOXES */
+
+.summary{
+display:flex;
+justify-content:center;
+gap:25px;
+flex-wrap:wrap;
+margin-bottom:40px;
 }
+
+.box{
+width:230px;
+padding:28px;
+border-radius:20px;
+text-align:center;
+color:white;
+font-size:22px;
+font-weight:bold;
+box-shadow:0 10px 20px rgba(0,0,0,0.15);
+transition:0.3s;
+}
+
+.box:hover{
+transform:translateY(-5px);
+}
+
+.total{
+background:linear-gradient(135deg,#667eea,#764ba2);
+}
+
+.pass{
+background:linear-gradient(135deg,#00b09b,#96c93d);
+}
+
+.fail{
+background:linear-gradient(135deg,#ff416c,#ff4b2b);
+}
+
+/* TABLE */
 
 table{
 width:100%;
 border-collapse:collapse;
+background:white;
+border-radius:18px;
 overflow:hidden;
-border-radius:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.12);
 }
 
 th{
-background:#2ebf91;
+background:#ff69b4;
 color:white;
-padding:14px;
-font-size:17px;
+padding:16px;
+font-size:18px;
 }
 
 td{
-padding:13px;
-border-bottom:1px solid #ddd;
-font-size:16px;
-color:#333;
+padding:14px;
+text-align:center;
+border-bottom:1px solid #f1f1f1;
 }
 
 tr:hover{
-background:#f5f5f5;
+background:#fff0f6;
 }
 
-.btn{
-display:inline-block;
-margin-top:22px;
-padding:12px 22px;
-background:linear-gradient(to right,#2ebf91,#1abc9c);
+/* STATUS */
+
+.passText{
+color:green;
+font-weight:bold;
+font-size:16px;
+}
+
+.failText{
+color:red;
+font-weight:bold;
+font-size:16px;
+}
+
+/* BUTTON */
+
+.back-btn{
+display:block;
+width:220px;
+margin:35px auto;
+padding:14px;
+text-align:center;
+background:#ff69b4;
 color:white;
 text-decoration:none;
 font-weight:bold;
@@ -76,15 +130,9 @@ border-radius:12px;
 transition:0.3s;
 }
 
-.btn:hover{
+.back-btn:hover{
+background:#e754a3;
 transform:scale(1.03);
-box-shadow:0 8px 18px rgba(0,0,0,0.2);
-}
-
-.msg{
-color:red;
-font-weight:bold;
-padding:15px;
 }
 
 </style>
@@ -93,77 +141,186 @@ padding:15px;
 
 <body>
 
-<div class="container">
+<div class="title">
+📋 Student Records
+</div>
 
-<h2>Student Marks List</h2>
+<div class="summary">
+
+<!-- TOTAL STUDENTS -->
+
+<div class="box total">
+
+Total Students<br><br>
+
+<%
+
+try{
+
+Connection con = MarkDAO.getConnection();
+
+PreparedStatement ps =
+con.prepareStatement(
+"SELECT COUNT(*) FROM StudentMarks");
+
+ResultSet rs = ps.executeQuery();
+
+if(rs.next()){
+out.println(rs.getInt(1));
+}
+
+}catch(Exception e){
+out.println(e);
+}
+
+%>
+
+</div>
+
+<!-- PASSED STUDENTS -->
+
+<div class="box pass">
+
+Passed Students<br><br>
+
+<%
+
+try{
+
+Connection con = MarkDAO.getConnection();
+
+PreparedStatement ps =
+con.prepareStatement(
+"SELECT COUNT(*) FROM StudentMarks WHERE Marks >= 35");
+
+ResultSet rs = ps.executeQuery();
+
+if(rs.next()){
+out.println(rs.getInt(1));
+}
+
+}catch(Exception e){
+out.println(e);
+}
+
+%>
+
+</div>
+
+<!-- FAILED STUDENTS -->
+
+<div class="box fail">
+
+Failed Students<br><br>
+
+<%
+
+try{
+
+Connection con = MarkDAO.getConnection();
+
+PreparedStatement ps =
+con.prepareStatement(
+"SELECT COUNT(*) FROM StudentMarks WHERE Marks < 35");
+
+ResultSet rs = ps.executeQuery();
+
+if(rs.next()){
+out.println(rs.getInt(1));
+}
+
+}catch(Exception e){
+out.println(e);
+}
+
+%>
+
+</div>
+
+</div>
+
+<!-- TABLE -->
 
 <table>
 
 <tr>
-<th>ID</th>
-<th>Name</th>
+<th>Student ID</th>
+<th>Student Name</th>
 <th>Subject</th>
 <th>Marks</th>
 <th>Exam Date</th>
+<th>Status</th>
 </tr>
 
 <%
-try
-{
-    Connection con = MarkDAO.getConnection();
-    Statement st = con.createStatement();
 
-    ResultSet rs =
-    st.executeQuery("select * from StudentMarks");
+try{
 
-    boolean found = false;
+Connection con = MarkDAO.getConnection();
 
-    while(rs.next())
-    {
-        found = true;
+PreparedStatement ps =
+con.prepareStatement(
+"SELECT * FROM StudentMarks");
+
+ResultSet rs = ps.executeQuery();
+
+while(rs.next()){
+
+int marks = rs.getInt("Marks");
+
 %>
 
 <tr>
+
 <td><%= rs.getInt("StudentID") %></td>
+
 <td><%= rs.getString("StudentName") %></td>
+
 <td><%= rs.getString("Subject") %></td>
-<td><%= rs.getInt("Marks") %></td>
+
+<td><%= marks %></td>
+
 <td><%= rs.getDate("ExamDate") %></td>
-</tr>
+
+<td>
 
 <%
-    }
 
-    if(!found)
-    {
+if(marks >= 35){
 %>
 
-<tr>
-<td colspan="5" class="msg">No Records Found</td>
-</tr>
+<span class="passText">PASS</span>
 
 <%
-    }
+}else{
+%>
 
-    con.close();
+<span class="failText">FAIL</span>
+
+<%
 }
-catch(Exception e)
-{
 %>
 
-<tr>
-<td colspan="5" class="msg">Error : <%= e %></td>
+</td>
+
 </tr>
 
 <%
 }
+
+con.close();
+
+}catch(Exception e){
+out.println(e);
+}
+
 %>
 
 </table>
 
-<a href="index.jsp" class="btn">Back to Home</a>
-
-</div>
+<a href="index.jsp" class="back-btn">
+← Back to Home
+</a>
 
 </body>
 </html>

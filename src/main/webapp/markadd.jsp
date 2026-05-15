@@ -1,3 +1,5 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" %>
+
 <html>
 <head>
 <title>Add Student Marks</title>
@@ -57,6 +59,23 @@ outline:none;
 box-shadow:0 0 8px rgba(24,90,157,0.3);
 }
 
+/* Readonly field */
+input[readonly]{
+background:#f3f3f3;
+color:#777;
+cursor:not-allowed;
+}
+
+/* Note text */
+.note{
+display:block;
+text-align:center;
+font-size:13px;
+color:gray;
+margin-top:6px;
+font-style:italic;
+}
+
 .btn{
 width:100%;
 padding:14px;
@@ -74,13 +93,6 @@ transition:0.3s;
 .btn:hover{
 transform:scale(1.03);
 box-shadow:0 8px 18px rgba(0,0,0,0.2);
-}
-
-.note{
-text-align:center;
-font-size:13px;
-color:gray;
-margin-top:12px;
 }
 
 a{
@@ -137,13 +149,29 @@ return true;
 <form name="f" action="AddMarkServlet" method="post"
 onsubmit="return validateForm()">
 
+<!-- Student ID -->
+<label>Student ID</label>
+<input type="text" name="id" class="input-box" 
+value="Auto Generated" readonly>
+
+<label class="note">* Student ID will be generated automatically</label>
+
 <label>Student Name</label>
 <input type="text" name="name" class="input-box"
 placeholder="Enter student name">
 
 <label>Subject</label>
-<input type="text" name="subject" class="input-box"
-placeholder="Enter subject name">
+<select name="subject" class="input-box">
+<option value="">Select Subject</option>
+<option value="DBMS">DBMS</option>
+<option value="Advanced Java">Advanced Java</option>
+<option value="Microcontroller">Microcontroller</option>
+<option value="Python">Python</option>
+<option value="Biology">Biology</option>
+<option value="ADA">ADA</option>
+<option value="ESD">ESD</option>
+<option value="UHV">UHV</option>
+</select>
 
 <label>Marks</label>
 <input type="text" name="marks" class="input-box"
@@ -155,10 +183,6 @@ placeholder="Enter marks">
 <input type="submit" value="Add Record" class="btn">
 
 </form>
-
-<div class="note">
-Student ID Auto Generated
-</div>
 
 <a href="index.jsp">Back to Home</a>
 

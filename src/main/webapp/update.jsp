@@ -1,144 +1,85 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"%>
 
 <html>
 <head>
-<meta charset="UTF-8">
 <title>Update Student Marks</title>
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
 body{
-font-family:Arial, sans-serif;
-height:100vh;
+font-family:Arial;
+background:linear-gradient(135deg,#ffd6e7,#fff0f5);
 display:flex;
 justify-content:center;
 align-items:center;
-background:linear-gradient(135deg,#ff9966,#ff5e62);
+height:100vh;
+margin:0;
 }
 
 .container{
-width:430px;
 background:white;
 padding:35px;
-border-radius:22px;
-box-shadow:0 15px 35px rgba(0,0,0,0.25);
-text-align:center;
+border-radius:20px;
+width:500px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
 }
 
 h2{
-color:#ff5e62;
-margin-bottom:25px;
-font-size:30px;
+text-align:center;
+color:#ff5c93;
+margin-bottom:20px;
 }
 
 label{
-display:block;
-text-align:left;
 font-weight:bold;
-margin-top:12px;
-margin-bottom:8px;
-color:#333;
-font-size:16px;
+margin-top:10px;
+display:block;
+color:#d63384;
 }
 
 .input-box{
 width:100%;
-padding:13px;
-border:2px solid #ddd;
-border-radius:12px;
-font-size:16px;
-outline:none;
-transition:0.3s;
+padding:12px;
+margin-top:5px;
+border-radius:8px;
+border:1px solid #ffb6c1;
+background:#f4f6fb;
 }
 
-.input-box:focus{
-border-color:#ff5e62;
-box-shadow:0 0 8px rgba(255,94,98,0.35);
+input[readonly]{
+background:#eee;
 }
 
 .btn{
 width:100%;
-margin-top:22px;
-padding:14px;
-border:none;
-border-radius:12px;
-background:linear-gradient(to right,#ff9966,#ff5e62);
+margin-top:18px;
+padding:12px;
+background:#ff5c93;
 color:white;
-font-size:18px;
-font-weight:bold;
+border:none;
+border-radius:10px;
 cursor:pointer;
-transition:0.3s;
+font-size:16px;
+font-weight:bold;
 }
 
 .btn:hover{
-transform:scale(1.03);
-box-shadow:0 8px 18px rgba(0,0,0,0.2);
+background:#e64980;
 }
 
-.note{
-margin-top:14px;
-font-size:13px;
-color:gray;
-}
-
-a{
+.back{
 display:block;
-margin-top:18px;
+text-align:center;
+margin-top:15px;
+padding:10px;
 text-decoration:none;
-font-weight:bold;
-color:#ff5e62;
-font-size:16px;
-}
-
-a:hover{
-color:#e64a4a;
+background:#fff0f5;
+border-radius:8px;
+color:#d63384;
+border:1px solid #ffb6c1;
 }
 
 </style>
-
-<script>
-
-function validateForm()
-{
-let id=document.forms["f"]["id"].value;
-let marks=document.forms["f"]["marks"].value;
-
-if(id=="" || marks=="")
-{
-alert("All fields are required");
-return false;
-}
-
-if(isNaN(id))
-{
-alert("Student ID must be numeric");
-return false;
-}
-
-if(isNaN(marks))
-{
-alert("Marks must be numeric");
-return false;
-}
-
-if(marks<0 || marks>100)
-{
-alert("Marks must be between 0 and 100");
-return false;
-}
-
-return true;
-}
-
-</script>
-
 </head>
 
 <body>
@@ -147,26 +88,81 @@ return true;
 
 <h2>Update Student Marks</h2>
 
-<form name="f" action="UpdateMarkServlet" method="post"
-onsubmit="return validateForm()">
+<!-- FETCH DETAILS -->
 
-<label>Student ID</label>
-<input type="text" name="id" class="input-box"
-placeholder="Enter Student ID">
+<form action="FetchMarkServlet" method="post">
 
-<label>New Marks</label>
-<input type="text" name="marks" class="input-box"
-placeholder="Enter New Marks">
+<label>Enter Student ID</label>
 
-<input type="submit" value="Update Record" class="btn">
+<input type="number"
+name="id"
+class="input-box"
+required>
+
+<input type="submit"
+value="Fetch Details"
+class="btn">
 
 </form>
 
-<div class="note">
-Enter valid Student ID and marks
-</div>
+<br>
 
-<a href="index.jsp">Back to Home</a>
+<!-- UPDATE FORM -->
+
+<form action="UpdateMarkServlet" method="post">
+
+<label>Student ID</label>
+
+<input type="text"
+name="id"
+class="input-box"
+value="<%= request.getAttribute("id") != null ? request.getAttribute("id") : "" %>"
+readonly>
+
+<label>Student Name</label>
+
+<input type="text"
+class="input-box"
+value="<%= request.getAttribute("name") != null ? request.getAttribute("name") : "" %>"
+readonly>
+
+<label>Subject</label>
+
+<input type="text"
+class="input-box"
+value="<%= request.getAttribute("subject") != null ? request.getAttribute("subject") : "" %>"
+readonly>
+
+<label>Previous Marks</label>
+
+<input type="text"
+class="input-box"
+value="<%= request.getAttribute("oldMarks") != null ? request.getAttribute("oldMarks") : "" %>"
+readonly>
+
+<label>Exam Date</label>
+
+<input type="text"
+class="input-box"
+value="<%= request.getAttribute("date") != null ? request.getAttribute("date") : "" %>"
+readonly>
+
+<label>New Marks</label>
+
+<input type="number"
+name="marks"
+class="input-box"
+required>
+
+<input type="submit"
+value="Update Marks"
+class="btn">
+
+</form>
+
+<a href="index.jsp" class="back">
+← Back to Home
+</a>
 
 </div>
 

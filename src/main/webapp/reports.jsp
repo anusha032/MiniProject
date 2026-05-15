@@ -165,6 +165,7 @@ onsubmit="return validateForm()">
 
 <select name="type">
 <option value="above">Marks Above Value</option>
+<option value="below">Marks Below Value</option>
 <option value="subject">Subject Wise</option>
 <option value="top">Top N Students</option>
 </select>

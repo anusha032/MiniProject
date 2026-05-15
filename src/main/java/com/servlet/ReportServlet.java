@@ -2,9 +2,7 @@ package com.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,38 +26,35 @@ public class ReportServlet extends HttpServlet {
             String value = request.getParameter("value");
 
             Connection con = MarkDAO.getConnection();
-
             PreparedStatement ps = null;
 
             if ("above".equals(type)) {
-
                 ps = con.prepareStatement(
-                "select * from StudentMarks where Marks > ?");
+                "SELECT * FROM StudentMarks WHERE Marks > ? ORDER BY Marks DESC");
+                ps.setInt(1, Integer.parseInt(value));
+            }
 
+            else if ("below".equals(type)) {
+                ps = con.prepareStatement(
+                "SELECT * FROM StudentMarks WHERE Marks < ? ORDER BY Marks DESC");
                 ps.setInt(1, Integer.parseInt(value));
             }
 
             else if ("subject".equals(type)) {
-
                 ps = con.prepareStatement(
-                "select * from StudentMarks where Subject = ?");
-
+                "SELECT * FROM StudentMarks WHERE Subject=? ORDER BY Marks DESC");
                 ps.setString(1, value);
             }
 
             else if ("top".equals(type)) {
-
                 ps = con.prepareStatement(
-                "select * from StudentMarks order by Marks desc limit ?");
-
+                "SELECT * FROM StudentMarks ORDER BY Marks DESC LIMIT ?");
                 ps.setInt(1, Integer.parseInt(value));
             }
 
             ResultSet rs = ps.executeQuery();
 
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Reports</title>");
+            out.println("<html><head><title>Reports</title>");
 
             out.println("<style>");
             out.println("body{margin:0;font-family:Arial;background:linear-gradient(135deg,#4b6cb7,#182848);padding:40px;}");
@@ -68,22 +63,20 @@ public class ReportServlet extends HttpServlet {
             out.println("table{width:100%;border-collapse:collapse;text-align:center;}");
             out.println("th{background:#4b6cb7;color:white;padding:12px;}");
             out.println("td{padding:12px;border-bottom:1px solid #ddd;}");
-            out.println("tr:hover{background:#f5f5f5;}");
+            out.println(".topper{background:#ffeaa7;font-weight:bold;}");
             out.println(".btn{display:inline-block;margin-top:20px;padding:12px 20px;background:#4b6cb7;color:white;text-decoration:none;border-radius:10px;font-weight:bold;}");
             out.println(".btn:hover{background:#182848;}");
             out.println(".center{text-align:center;}");
             out.println("</style>");
 
-            out.println("</head>");
-            out.println("<body>");
-
+            out.println("</head><body>");
             out.println("<div class='box'>");
 
             out.println("<h2>Report Result</h2>");
 
             out.println("<table>");
-
             out.println("<tr>");
+            out.println("<th>Rank</th>");
             out.println("<th>ID</th>");
             out.println("<th>Name</th>");
             out.println("<th>Subject</th>");
@@ -91,44 +84,53 @@ public class ReportServlet extends HttpServlet {
             out.println("<th>Exam Date</th>");
             out.println("</tr>");
 
+            int rank = 1;
             boolean found = false;
 
             while(rs.next()) {
-
                 found = true;
 
-                out.println("<tr>");
-                out.println("<td>" + rs.getInt(1) + "</td>");
-                out.println("<td>" + rs.getString(2) + "</td>");
-                out.println("<td>" + rs.getString(3) + "</td>");
-                out.println("<td>" + rs.getInt(4) + "</td>");
-                out.println("<td>" + rs.getDate(5) + "</td>");
+                String rankText;
+                if(rank == 1) rankText = "🥇 1st";
+                else if(rank == 2) rankText = "🥈 2nd";
+                else if(rank == 3) rankText = "🥉 3rd";
+                else rankText = rank + "th";
+
+                String rowClass = (rank == 1) ? "class='topper'" : "";
+
+                out.println("<tr " + rowClass + ">");
+                out.println("<td>" + rankText + "</td>");
+                out.println("<td>" + rs.getInt("StudentID") + "</td>");
+                out.println("<td>" + rs.getString("StudentName") + "</td>");
+                out.println("<td>" + rs.getString("Subject") + "</td>");
+                out.println("<td>" + rs.getInt("Marks") + "</td>");
+                out.println("<td>" + rs.getDate("ExamDate") + "</td>");
                 out.println("</tr>");
+
+                rank++;
             }
 
             if(!found) {
-
-                out.println("<tr>");
-                out.println("<td colspan='5' style='color:red;'>No Data Found</td>");
-                out.println("</tr>");
+                out.println("<tr><td colspan='6' style='color:red;'>No Data Found</td></tr>");
             }
 
             out.println("</table>");
 
             out.println("<div class='center'>");
+
+            // ✅ FIXED HERE
             out.println("<a href='reports.jsp' class='btn'>Back</a>");
+
             out.println("&nbsp;&nbsp;");
             out.println("<a href='index.jsp' class='btn'>Home</a>");
             out.println("</div>");
 
             out.println("</div>");
-            out.println("</body>");
-            out.println("</html>");
+            out.println("</body></html>");
 
             con.close();
 
         } catch(Exception e) {
-
             out.println("<h3 style='color:red;text-align:center;'>Error : " + e + "</h3>");
         }
     }
