@@ -101,26 +101,24 @@ color:gray;
 </style>
 
 <script>
-
 function validateForm()
 {
-let id=document.forms["f"]["id"].value;
+    let id = document.forms["f"]["id"].value;
 
-if(id=="")
-{
-alert("Student ID is required");
-return false;
+    if(id=="")
+    {
+        alert("Student ID is required");
+        return false;
+    }
+
+    if(isNaN(id))
+    {
+        alert("Student ID must be numeric");
+        return false;
+    }
+
+    return confirm("Are you sure you want to delete this record?");
 }
-
-if(isNaN(id))
-{
-alert("Student ID must be numeric");
-return false;
-}
-
-return true;
-}
-
 </script>
 
 </head>
